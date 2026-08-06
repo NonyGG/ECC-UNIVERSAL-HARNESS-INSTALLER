@@ -159,3 +159,23 @@ export async function doctor(adapter: UniversalHarnessAdapter, ctx: InstallConte
 }
 
 export type { Plan }
+
+/** Public installer facade — stable, harness-agnostic surface. */
+export function createInstaller(opts: { registry?: HarnessAdapterRegistry; eccRoot?: string } = {}) {
+  const registry = opts.registry ?? new HarnessAdapterRegistry()
+  const eccRoot = opts.eccRoot ?? ""
+  const ctxFor = (harnessId: string, scope: InstallContext["scope"] = "project", projectDir = process.cwd()): InstallContext =>
+    ({ harnessId, scope, eccRoot, projectDir, userDir: undefined, globalDir: undefined, dryRun: false, yes: false, strict: false, noNetwork: true })
+  return {
+    registry,
+    adapters: () => registry.list().map((d) => ({ id: d.id, status: d.status, risk: d.risk })),
+    detectHarness: (harnessId: string, projectDir?: string) => registry.get(harnessId).detect(ctxFor(harnessId, "project", projectDir)),
+    plan: (harnessId: string, projectDir?: string) => registry.get(harnessId).planInstallation(ctxFor(harnessId, "project", projectDir)),
+    install: (harnessId: string, projectDir?: string) => runInstall(registry.get(harnessId), ctxFor(harnessId, "project", projectDir)),
+    verify: (harnessId: string, projectDir?: string) => runVerify(registry.get(harnessId), { ...ctxFor(harnessId, "project", projectDir), installationId: "inst_verify" }),
+    health: (harnessId: string, projectDir?: string) => registry.get(harnessId).health(ctxFor(harnessId, "project", projectDir)),
+    rollback: (harnessId: string, installationId: string, baseDir?: string) => registry.get(harnessId).rollback({ installationId, dryRun: false, yes: false, baseDir: baseDir ?? process.cwd() }),
+    doctor: (harnessId: string, projectDir?: string) => doctor(registry.get(harnessId), ctxFor(harnessId, "project", projectDir), projectDir ?? process.cwd()),
+    discover: (projectDir: string, harnessRoots: string[]) => universalDiscover(projectDir, undefined, harnessRoots, eccRoot),
+  }
+}

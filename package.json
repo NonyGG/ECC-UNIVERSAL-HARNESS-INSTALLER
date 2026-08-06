@@ -1,0 +1,31 @@
+{
+  "name": "ecc-universal-harness-installer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Universal harness integration installer for the ECC institutional runtime. Harness-agnostic by contract, extensible by adapters.",
+  "workspaces": [
+    "packages/*",
+    "adapters/*",
+    "adapters/experimental/*"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "typecheck": "tsc --noEmit -p packages/contracts/tsconfig.json && tsc --noEmit -p packages/core/tsconfig.json && tsc --noEmit -p packages/cli/tsconfig.json",
+    "test": "node --import tsx tests/core.test.ts && node --import tsx tests/opencode-adapter.test.ts",
+    "test:core": "node --import tsx tests/core.test.ts",
+    "test:adapter": "node --import tsx tests/opencode-adapter.test.ts",
+    "lint": "node scripts/lint.mjs",
+    "proof": "node --import tsx scripts/operational-proof.ts",
+    "cli": "node --import tsx packages/cli/src/index.ts"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^26.1.2",
+    "tsx": "^4.23.9",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "@ecc-installer/cli",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": { "ecc-harness": "src/index.ts" },
+  "license": "MIT",
+  "dependencies": { "@ecc-installer/contracts": "0.1.0", "@ecc-installer/adapter-sdk": "0.1.0", "@ecc-installer/core": "0.1.0" }
+}

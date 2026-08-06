@@ -1,0 +1,30 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+      - run: node --import tsx tests/core.test.ts
+      - run: node --import tsx tests/opencode-adapter.test.ts
+      - run: node --import tsx scripts/operational-proof.ts
+      - run: node scripts/lint.mjs
+      - run: npx tsc --noEmit -p tsconfig.json
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - run: npm install --no-audit --no-fund
+      - run: npm pack --dry-run
+      - run: node scripts/lint.mjs
+      - name: secret scan
+        run: "! grep -rniE 'sk-proj-|ghp_[A-Za-z0-9]{20,}|BEGIN (RSA |OPENSSH )?PRIVATE KEY' . --exclude-dir=node_modules --exclude-dir=.git"

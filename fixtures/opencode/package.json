@@ -1,0 +1,7 @@
+{
+  "name": "fixture-opencode",
+  "version": "0.0.1",
+  "type": "module",
+  "description": "Fixture harness used by tests/operational proof: a minimal OpenCode-like project (config + .opencode/plugins).",
+  "private": true
+}

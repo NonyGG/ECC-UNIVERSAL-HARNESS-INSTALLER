@@ -1,0 +1,13 @@
+ECC Universal Harness Installer
+
+This project reuses and generalizes certified integration logic originally
+developed for the Everything Claude Code (ECC) ecosystem and its OpenCode
+integration program (ECC-OPENCODE-INTEGRATION-1 .. 6).
+
+The institutional runtime authority remains the ECC repository
+(https://github.com/affaan-m/ECC or the ECC distribution in use). This project
+consumes the ECC Institutional Public API (dist/institutional) through the
+universal bridge contract; it does not duplicate domain authorities.
+
+No third-party code is incorporated without attribution. All adapters in this
+repository are distributed with the installer and are allowlisted.
